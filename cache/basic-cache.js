@@ -15,13 +15,19 @@
       if(list.length < cap){
         _add(obj);
       } else {
-
+        _reset(_findNewestEntry(),obj);
       }
+      _decrementAges();
     };
 
     // adds an object to the cache. No rules are respected.
     _add = function(obj){
       list.push({'obj' : obj, age : 1});
+    }
+
+    _reset = function(index,obj){
+      list[index].obj = obj;
+      list[index].age = 1;
     }
 
     // searches the cache to find the obj and returns its index
@@ -34,6 +40,25 @@
       }
       return -1;
     };
+
+    // finds the newest entry and returns that index location
+    _findNewestEntry = function(){
+      var minAge = 'unset';
+      var minAgeIndex = -1;
+      for (var i = 0; i < list.length; i++) {
+        if(minAge === 'unset' || minAge <= list[i].age){
+          minAge = list[i].age;
+          minAgeIndex = i;
+        }
+      }
+      return minAgeIndex;
+    }
+
+    _decrementAges = function(){
+      for( var i = 0; i < list.length; i++){
+        list[i].age--;
+      }
+    }
 }
 
 
