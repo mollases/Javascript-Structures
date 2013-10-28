@@ -1,5 +1,4 @@
 ﻿function BasicCache(limit){
-   
     this.cap = limit,
     this.list = [];
 }
@@ -12,10 +11,12 @@ BasicCache.prototype.add = function(obj){
      this.list[indexOf].age++;
     } else if(this.list.length < this.cap){
       this._add(obj);
+      indexOf = this.list.length - 1;
     } else {
-      this._reset(this._findNewestEntry(),obj);
+      indexOf = this._findNewestEntry();
+      this._reset(indexOf,obj);
     }
-    this._decrementAges();
+    this._decrementAges(indexOf);
   };
 
   // adds an object to the cache. No rules are respected.
@@ -46,10 +47,10 @@ BasicCache.prototype.add = function(obj){
 
   // finds the newest entry and returns that index location
   BasicCache.prototype._findNewestEntry = function(){
-    var minAge = 'unset';
+    var minAge;
     var minAgeIndex = -1;
     for (var i = 0; i < this.list.length; i++) {
-      if(minAge === 'unset' || minAge <= this.list[i].age){
+      if(minAge === undefined || minAge >= this.list[i].age){
         clog('minAge set to '+this.list[i].age);
         minAge = this.list[i].age;
         minAgeIndex = i;
@@ -60,32 +61,39 @@ BasicCache.prototype.add = function(obj){
 
   // as caches are time sensitive by nature
   // we decrement the age factor to get the least recently used on new additions.
-  BasicCache.prototype._decrementAges = function(){
+  BasicCache.prototype._decrementAges = function(lastChange){
     clog('decrementing all ages')
     for( var i = 0; i < this.list.length; i++){
       this.list[i].age--;
     }
+    this.list[lastChange].age++;
   };
 
+  BasicCache.prototype.printInfo = function(){
+    clog('cap = '+this.cap);
+    for(var i = 0; i < this.list.length; i++){
+      clog('{obj: '+this.list[i].obj+', age: '+this.list[i].age+'}');
+    }
+    clog('---');
+  }
+
+// console.log alias
 function clog(msg){
   console.log(msg);
 }
 
 
-var Cache = new BasicCache(5);
-Cache.add('hello');
-Cache.add('hello');
-Cache.add('hello');
+// This usage should print:
+//
+//    cap = 3
+//      {obj: 1, age: -1} 
+//      {obj: 4, age: 1} 
+//      {obj: 3, age: 0} 
 
-
-Cache.add('hi');
-Cache.add('hi');
-
-Cache.add('sugar');
-Cache.add('spice');
-Cache.add('and everything');
-Cache.add('nice');
-Cache.add('nice1');
-Cache.add('nice2');
-Cache.add('nice3');
-Cache.add('nice4');
+var cache = new BasicCache(3);
+cache.add('1');
+cache.add('2');
+cache.add('1');
+cache.add('3');
+cache.add('4');
+cache.printInfo();
