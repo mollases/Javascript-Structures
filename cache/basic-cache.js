@@ -10,7 +10,6 @@ BasicCache.prototype.add = function(key,obj){
      this.list[key].age++;
     } else if(this.list.length <= this.cap){
       this._add(key,obj);
-      this.list.length - 1;
     } else {
       indexOf = this._findNewestEntry();
       this._reset(indexOf,key,obj);
@@ -31,7 +30,7 @@ BasicCache.prototype.get = function(key){
   } else {
     return undefined;
   }
-}
+};
 
 // prints out useful information regarding the BasicCache and its contents.
 BasicCache.prototype.printInfo = function(){
@@ -43,7 +42,7 @@ BasicCache.prototype.printInfo = function(){
     }
   }
   clog('--- end warning, wysiwyg ---');
-}
+};
 
 // adds a key value pair to the cache. No rules are respected.
 BasicCache.prototype._add = function(key,obj){
@@ -54,7 +53,7 @@ BasicCache.prototype._add = function(key,obj){
 // as caches are time sensitive by nature
 // we decrement the age factor to get the least recently used on new additions.
 BasicCache.prototype._decrementAges = function(key){
-  clog('decrementing all ages')
+  clog('decrementing all ages');
   for( var i = 0; i < this.list.length; i++){
     if(this.list[i] !== undefined)
     this.list[i].age--;
